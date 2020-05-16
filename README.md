@@ -78,7 +78,27 @@
   obj.fn()
   ```
 
-  __输出应该是: `20`, obj.fn调用的时候，fn函数内部this指向为obj， 此时执行setTimeout的时候，入参为箭头函数，则其内部this始终与第一次绑定的this保持一致也就是当前执行环境的this， 此时`this.a`为`20`__
+  __输出应该是: `20`, obj.fn`定义的时候`其内部this是指向window的(浏览器环境)，具体分析: obj.fn定义的时候(编译阶段)，底层需要对该函数创建及确定一个词法作用域来入栈，setTimeout中对入参函数也是同理，顺序就是obj.fn入栈，内部this指向obj，然后setTimeout中对入参函数入栈，因为其是一个箭头函数，`箭头函数创建的时候是不绑定this的，箭头函数内部的this指向是继承自函数词法作用域创建时(执行阶段)其作用域链上一层的内部this, 详细如下方例子`，这也是es5的新特性，与常规的函数在编译阶段其内部this就已经被绑定了不同，箭头函数内this是在执行阶段作用域链创建时从上一级作用域继承而来。此时，setTimeout中入参函数的上层作用域为window(浏览器环境)， 所以内部的打印的this.a为20__
+
+  ```js
+    a = 1
+    const obj = {
+      a: 2,
+      fn() {
+        console.log(this.a)
+      }
+    }
+    obj.fn.call(window) // output: 1, function声明的函数内部this在创建的时候被分配了this指向window
+
+    a = 1
+    const obj = {
+      a: 2,
+      fn: () => {
+        console.log(this.a)
+      }
+    }
+    obj.fn.call(obj) // output: 1, 箭头函数创建的时候不分配this, 函数内部的this继承自上层作用域链，只和上层作用域的this有关
+  ```
 
 - 6.symbol 用途
   * 创建一个唯一的值，可以用于拓展第三方库的sdk以防止冲突
