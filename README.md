@@ -155,9 +155,10 @@
     })
   })
 
-  new Promise(resolve => resolve('hello'))
-    .then(s => s + 'world')
-    .then(s => s + '!')
+    Promise.resolve('hello')
+      .then(s => s + 'world')
+      .then(s => s + '!')
+
   ```
 
 - 10. TS/JS 关系
