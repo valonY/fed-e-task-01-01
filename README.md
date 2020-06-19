@@ -22,7 +22,7 @@
     a[6]()
 
     var a = [];
-    for (let i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       (i =>{
         a[i] = function() {
           console.log(i)
